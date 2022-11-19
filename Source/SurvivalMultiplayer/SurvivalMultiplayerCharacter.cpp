@@ -42,6 +42,15 @@ void ASurvivalMultiplayerCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	//Add a mapping context on Possessed
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -66,15 +75,6 @@ void ASurvivalMultiplayerCharacter::SetupPlayerInputComponent(class UInputCompon
 void ASurvivalMultiplayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-
-	//Add a mapping context on Possessed
-	if (APlayerController* PlayerController = Cast<APlayerController>(NewController))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
 }
 
 void ASurvivalMultiplayerCharacter::UnPossessed()
@@ -97,6 +97,7 @@ void ASurvivalMultiplayerCharacter::Move(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Move"));
 		// add movement 
 		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 		AddMovementInput(GetActorRightVector(), MovementVector.X);
@@ -110,6 +111,7 @@ void ASurvivalMultiplayerCharacter::Look(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("look"));
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
